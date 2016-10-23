@@ -1,16 +1,21 @@
-#include "Main.h"
 #include "texture.h"
 #include "figuras.h"
 #include "Camera.h"
 
 GLfloat Diffuse[] = { 0.5, 0.5, 0.5, 1 };
 GLfloat Position[] = { 0, 7, -5, 0};
-
-CCamera objCamera;
 GLfloat g_lookupdown = 0;
 
+CCamera objCamera;
+
+CTexture text1;
+
+CFiguras sky;
+
+//float movX = 16.39, movY = 1.71, movZ = -3, rotX = 0, rotY = 180, rotZ = 0;
+
 void InitGL(GLvoid) {
-	glClearColor(1, 1, 1, 0);
+	glClearColor(0, 0, 0, 0);
 	glEnable(GL_TEXTURE_2D);
 	glShadeModel(GL_SMOOTH);
 	glLightfv(GL_LIGHT1, GL_POSITION, Position);
@@ -25,12 +30,132 @@ void InitGL(GLvoid) {
 	glEnable(GL_AUTO_NORMAL);
 	glEnable(GL_NORMALIZE);
 	//Texturas aquí
+	text1.LoadBMP("01.bmp");
+	text1.BuildGLTexture();
+	text1.ReleaseImage();
+	//objCamera.Position_Camera(16.39, 1.71, -3, 16.39, 1.71, 0, 0, 1, 0);
+	objCamera.Position_Camera(0, 2.5f, 3, 0, 2.5f, 0, 0, 1, 0);
+}
+
+void cubo( ) {
+	//Coordenadas del cubo unitario con centro en el origen
+	GLfloat vertice[8][3] = {
+		{ 0.5 ,-0.5, 0.5 },
+		{ -0.5 ,-0.5, 0.5 },
+		{ -0.5 ,-0.5, -0.5 },
+		{ 0.5 ,-0.5, -0.5 },
+		{ 0.5 ,0.5, 0.5 },
+		{ 0.5 ,0.5, -0.5 },
+		{ -0.5 ,0.5, -0.5 },
+		{ -0.5 ,0.5, 0.5 },
+	};
+
+	//Cara frontal
+	glBegin(GL_POLYGON);
+		glNormal3f(0.0f, 0.0f, 1.0f);
+		glVertex3fv(vertice[0]);
+		glVertex3fv(vertice[4]);
+		glVertex3fv(vertice[7]);
+		glVertex3fv(vertice[1]);
+	glEnd();
+
+	//Cara derecha
+	glBegin(GL_POLYGON);
+		glNormal3f(1.0f, 0.0f, 0.0f);
+		glVertex3fv(vertice[0]);
+		glVertex3fv(vertice[3]);
+		glVertex3fv(vertice[5]);
+		glVertex3fv(vertice[4]);
+	glEnd();
+
+	//Cara trasera
+	glBegin(GL_POLYGON);
+		glNormal3f(0.0f, 0.0f, -1.0f);
+		glVertex3fv(vertice[6]);
+		glVertex3fv(vertice[5]);
+		glVertex3fv(vertice[3]);
+		glVertex3fv(vertice[2]);
+	glEnd();
+
+	//Cara izquierda
+	glBegin(GL_POLYGON);
+		glNormal3f(-1.0f, 0.0f, 0.0f);
+		glVertex3fv(vertice[1]);
+		glVertex3fv(vertice[7]);
+		glVertex3fv(vertice[6]);
+		glVertex3fv(vertice[2]);
+	glEnd();
+
+	//Cara inferior
+	glBegin(GL_POLYGON);
+		glNormal3f(0.0f, -1.0f, 0.0f);
+		glVertex3fv(vertice[0]);
+		glVertex3fv(vertice[1]);
+		glVertex3fv(vertice[2]);
+		glVertex3fv(vertice[3]);
+	glEnd();
+
+	//Cara superior
+	glBegin(GL_POLYGON);
+		glNormal3f(0.0f, 1.0f, 0.0f);
+		glVertex3fv(vertice[4]);
+		glVertex3fv(vertice[5]);
+		glVertex3fv(vertice[6]);
+		glVertex3fv(vertice[7]);
+	glEnd();
 }
 
 void display(void) {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glLoadIdentity();
-	//Área de dibujo
+
+	glPushMatrix();
+		glRotatef(g_lookupdown, 1.0f, 0, 0);
+
+		gluLookAt(objCamera.mPos.x, objCamera.mPos.y, objCamera.mPos.z,
+			objCamera.mView.x, objCamera.mView.y, objCamera.mView.z,
+			objCamera.mUp.x, objCamera.mUp.y, objCamera.mUp.z);
+
+		glPushMatrix();
+			//Cielo
+			glPushMatrix();
+				glDisable(GL_LIGHTING);
+				glTranslatef(0, 60, 0);
+				glColor3f(1, 1, 1);
+				sky.skybox(130.0, 130.0, 130.0, text1.GLindex);
+				glEnable(GL_LIGHTING);
+			glPopMatrix();
+
+			//Barda Exterior
+			glPushMatrix();
+				glColor3f(0, 0, 0);
+				glTranslatef(0, 1, -9.86);
+				glPushMatrix();
+					glScalef(1, 2, 19.72);
+					cubo();
+				glPopMatrix();
+				glPushMatrix();
+					glTranslatef(12.745, 0, -9.86);
+					glScalef(25.49, 2, 1);
+					cubo();
+				glPopMatrix();
+				glPushMatrix();
+					glTranslatef(25.49, 0, 0);
+					glScalef(1, 2, 19.72);
+					cubo();
+				glPopMatrix();
+			glPopMatrix();
+
+			//Terreno
+			glPushMatrix();
+				glColor3f(0.1333, 0.5451, 0.1333);
+				glTranslatef(12.745, 0, -9.86);
+				glScalef(25.49, 0.01, 19.72);
+				cubo();
+			glPopMatrix();
+		glPopMatrix();
+	glPopMatrix();
+
 	glutSwapBuffers();
 }
 
@@ -45,7 +170,7 @@ void reshape(int width, int height) {
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	glFrustum(0, 30, 0, 30, 0, -30);
+	glFrustum(-0.1, 0.1, -0.1, 0.1, 0.1, 170.0);
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 }
