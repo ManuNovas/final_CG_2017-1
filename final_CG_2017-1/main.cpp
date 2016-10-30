@@ -128,20 +128,44 @@ void display(void) {
 
 			//Barda Exterior
 			glPushMatrix();
-				glColor3f(0, 0, 0);
+				glColor3f(0.25, 0.25, 0.25);
 				glTranslatef(0, 1, -9.86);
 				glPushMatrix();
-					glScalef(1, 2, 19.72);
+					glScalef(0.2, 2, 19.72);
 					cubo();
 				glPopMatrix();
 				glPushMatrix();
 					glTranslatef(12.745, 0, -9.86);
-					glScalef(25.49, 2, 1);
+					glScalef(25.49, 2, 0.2);
 					cubo();
 				glPopMatrix();
 				glPushMatrix();
 					glTranslatef(25.49, 0, 0);
-					glScalef(1, 2, 19.72);
+					glScalef(0.2, 2, 19.72);
+					cubo();
+				glPopMatrix();
+			glPopMatrix();
+
+			//Recamara principal
+			glPushMatrix();
+				glTranslatef(5.01, 0.4, -6.01);
+				glPushMatrix();
+					glScalef(5.76, 0.8, 0.2);
+					cubo();
+				glPopMatrix();
+				glPushMatrix();
+					glTranslatef(0, 2.7, 0);
+					glScalef(5.76, 0.2, 0.2);
+					cubo();
+				glPopMatrix();
+				glPushMatrix();
+					glTranslatef(-2.165, 1.5, 0);
+					glScalef(1.43, 2.2, 0.2);
+					cubo();
+				glPopMatrix();
+				glPushMatrix();
+					glTranslatef(2.88, 1.5, 0);
+					glScalef(1.5, 2.2, 0.2);
 					cubo();
 				glPopMatrix();
 			glPopMatrix();
