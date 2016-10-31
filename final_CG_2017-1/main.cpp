@@ -11,8 +11,11 @@ CCamera objCamera;
 CTexture text1;
 
 CFiguras sky;
+CFiguras objeto;
 
-//float movX = 16.39, movY = 1.71, movZ = -3, rotX = 0, rotY = 180, rotZ = 0;
+CTexture muro;
+CTexture pasto;
+CTexture ventana;
 
 void InitGL(GLvoid) {
 	glClearColor(0, 0, 0, 0);
@@ -33,76 +36,20 @@ void InitGL(GLvoid) {
 	text1.LoadBMP("01.bmp");
 	text1.BuildGLTexture();
 	text1.ReleaseImage();
-	//objCamera.Position_Camera(16.39, 1.71, -3, 16.39, 1.71, 0, 0, 1, 0);
+
+	muro.LoadTGA("muro.tga");
+	muro.BuildGLTexture();
+	muro.ReleaseImage();
+
+	pasto.LoadTGA("pasto.tga");
+	pasto.BuildGLTexture();
+	pasto.ReleaseImage();
+
+	ventana.LoadTGA("ventana.tga");
+	ventana.BuildGLTexture();
+	ventana.ReleaseImage();
+
 	objCamera.Position_Camera(0, 2.5f, 3, 0, 2.5f, 0, 0, 1, 0);
-}
-
-void cubo( ) {
-	//Coordenadas del cubo unitario con centro en el origen
-	GLfloat vertice[8][3] = {
-		{ 0.5 ,-0.5, 0.5 },
-		{ -0.5 ,-0.5, 0.5 },
-		{ -0.5 ,-0.5, -0.5 },
-		{ 0.5 ,-0.5, -0.5 },
-		{ 0.5 ,0.5, 0.5 },
-		{ 0.5 ,0.5, -0.5 },
-		{ -0.5 ,0.5, -0.5 },
-		{ -0.5 ,0.5, 0.5 },
-	};
-
-	//Cara frontal
-	glBegin(GL_POLYGON);
-		glNormal3f(0.0f, 0.0f, 1.0f);
-		glVertex3fv(vertice[0]);
-		glVertex3fv(vertice[4]);
-		glVertex3fv(vertice[7]);
-		glVertex3fv(vertice[1]);
-	glEnd();
-
-	//Cara derecha
-	glBegin(GL_POLYGON);
-		glNormal3f(1.0f, 0.0f, 0.0f);
-		glVertex3fv(vertice[0]);
-		glVertex3fv(vertice[3]);
-		glVertex3fv(vertice[5]);
-		glVertex3fv(vertice[4]);
-	glEnd();
-
-	//Cara trasera
-	glBegin(GL_POLYGON);
-		glNormal3f(0.0f, 0.0f, -1.0f);
-		glVertex3fv(vertice[6]);
-		glVertex3fv(vertice[5]);
-		glVertex3fv(vertice[3]);
-		glVertex3fv(vertice[2]);
-	glEnd();
-
-	//Cara izquierda
-	glBegin(GL_POLYGON);
-		glNormal3f(-1.0f, 0.0f, 0.0f);
-		glVertex3fv(vertice[1]);
-		glVertex3fv(vertice[7]);
-		glVertex3fv(vertice[6]);
-		glVertex3fv(vertice[2]);
-	glEnd();
-
-	//Cara inferior
-	glBegin(GL_POLYGON);
-		glNormal3f(0.0f, -1.0f, 0.0f);
-		glVertex3fv(vertice[0]);
-		glVertex3fv(vertice[1]);
-		glVertex3fv(vertice[2]);
-		glVertex3fv(vertice[3]);
-	glEnd();
-
-	//Cara superior
-	glBegin(GL_POLYGON);
-		glNormal3f(0.0f, 1.0f, 0.0f);
-		glVertex3fv(vertice[4]);
-		glVertex3fv(vertice[5]);
-		glVertex3fv(vertice[6]);
-		glVertex3fv(vertice[7]);
-	glEnd();
 }
 
 void display(void) {
@@ -130,53 +77,67 @@ void display(void) {
 			glPushMatrix();
 				glColor3f(0.25, 0.25, 0.25);
 				glTranslatef(0, 1, -9.86);
-				glPushMatrix();
-					glScalef(0.2, 2, 19.72);
-					cubo();
-				glPopMatrix();
+				objeto.prisma(2, 0.2, 19.72, 0);
 				glPushMatrix();
 					glTranslatef(12.745, 0, -9.86);
-					glScalef(25.49, 2, 0.2);
-					cubo();
+					objeto.prisma(2, 25.49, 0.2, 0);
 				glPopMatrix();
 				glPushMatrix();
 					glTranslatef(25.49, 0, 0);
-					glScalef(0.2, 2, 19.72);
-					cubo();
+					objeto.prisma(2, 0.2, 19.72, 0);
 				glPopMatrix();
 			glPopMatrix();
 
 			//Recamara principal
 			glPushMatrix();
-				glTranslatef(5.01, 0.4, -6.01);
+				glColor3f(1, 1, 1);
 				glPushMatrix();
-					glScalef(5.76, 0.8, 0.2);
-					cubo();
+					glTranslatef(5.01, 0.4, -6.01);
+					objeto.prisma(0.8, 5.76, 0.2, muro.GLindex);
+					glPushMatrix();
+						glTranslatef(0, 2.8, 0);
+						objeto.prisma(0.4, 5.76, 0.2, muro.GLindex);
+					glPopMatrix();
+					glPushMatrix();
+						glTranslatef(-2.165, 1.5, 0);
+						objeto.prisma(2.2, 1.43, 0.2, muro.GLindex);
+					glPopMatrix();
+					glPushMatrix();
+						glTranslatef(2.13, 1.5, 0);
+						objeto.prisma(2.2, 1.5, 0.2, muro.GLindex);
+					glPopMatrix();
 				glPopMatrix();
 				glPushMatrix();
-					glTranslatef(0, 2.7, 0);
-					glScalef(5.76, 0.2, 0.2);
-					cubo();
+					glTranslatef(2.13, 1.7, -7.99);
+					objeto.prisma(3.4, 0.2, 4.16, muro.GLindex);
 				glPopMatrix();
 				glPushMatrix();
-					glTranslatef(-2.165, 1.5, 0);
-					glScalef(1.43, 2.2, 0.2);
-					cubo();
+					glTranslatef(5.01, 1.7, -10.07);
+					objeto.prisma(3.4, 5.76, 0.2, muro.GLindex);
 				glPopMatrix();
 				glPushMatrix();
-					glTranslatef(2.88, 1.5, 0);
-					glScalef(1.5, 2.2, 0.2);
-					cubo();
+					glTranslatef(7.89, 1.7, -7.24);
+					objeto.prisma(3.4, 0.2, 2.66, muro.GLindex);
 				glPopMatrix();
 			glPopMatrix();
 
 			//Terreno
 			glPushMatrix();
-				glColor3f(0.1333, 0.5451, 0.1333);
+				glColor3f(1, 1, 1);
 				glTranslatef(12.745, 0, -9.86);
-				glScalef(25.49, 0.01, 19.72);
-				cubo();
+				objeto.prisma(0.01, 25.49, 19.72, pasto.GLindex);
 			glPopMatrix();
+
+			//Ventanas
+			glEnable(GL_BLEND);
+			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			glBindTexture(GL_TEXTURE_2D, ventana.GLindex);
+			glPushMatrix();
+				glColor3f(1, 1, 1);
+				glTranslatef(4.975, 1.9, -6.01);
+				objeto.prisma(2.2, 2.83, 0.1, ventana.GLindex);
+			glPopMatrix();
+			glDisable(GL_BLEND);
 		glPopMatrix();
 	glPopMatrix();
 
