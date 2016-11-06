@@ -16,6 +16,7 @@ CFiguras objeto;
 CTexture muro;
 CTexture pasto;
 CTexture ventana;
+CTexture piso;
 
 void InitGL(GLvoid) {
 	glClearColor(0, 0, 0, 0);
@@ -49,7 +50,99 @@ void InitGL(GLvoid) {
 	ventana.BuildGLTexture();
 	ventana.ReleaseImage();
 
+	piso.LoadTGA("piso.tga");
+	piso.BuildGLTexture();
+	piso.ReleaseImage();
+
 	objCamera.Position_Camera(0, 2.5f, 3, 0, 2.5f, 0, 0, 1, 0);
+}
+
+void recamaraPrincipal() {
+	//Muros de la recámara principal
+	glPushMatrix();
+		glColor3f(1, 1, 1);
+		glPushMatrix();
+			glTranslatef(5.01, 0.4, -6.01);
+			//Muro AB MI
+			objeto.prisma(0.8, 5.76, 0.2, muro.GLindex);
+			glPushMatrix();
+				glTranslatef(0, 2.8, 0);
+				//Muro AB MS
+				objeto.prisma(0.4, 5.76, 0.2, muro.GLindex);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(-2.165, 1.5, 0);
+				//Muro A
+				objeto.prisma(2.2, 1.43, 0.2, muro.GLindex);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(2.13, 1.5, 0);
+				//Muro B
+				objeto.prisma(2.2, 1.5, 0.2, muro.GLindex);
+			glPopMatrix();
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(2.13, 1.7, -8.04);
+			//Muro K
+			objeto.prisma(3.4, 0.2, 4.26, muro.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(5.01, 1.7, -10.07);
+			//Muro J
+			objeto.prisma(3.4, 5.76, 0.2, muro.GLindex);
+		glPopMatrix();
+		glPushMatrix();
+			glTranslatef(7.89, 1.7, -7.24);
+			//Muro L
+			objeto.prisma(3.4, 0.2, 2.66, muro.GLindex);
+		glPopMatrix();
+	glPopMatrix();
+	//Piso
+	glPushMatrix();
+		glColor3f(1, 1, 1);
+		glTranslatef(5.01, 0.4, -7.99);
+		objeto.prisma(0.8, 5.56, 3.96, piso.GLindex);
+	glPopMatrix();
+}
+
+void baño() {
+	//Muros
+	glPushMatrix();
+		glColor3f(1, 1, 1);
+		glPushMatrix();
+			glPushMatrix();
+				glTranslatef(3.56, 0.85, -10.935);
+				//Muro QR MI
+				objeto.prisma(1.7, 0.2, 1.73, muro.GLindex);
+				glPushMatrix();
+					//Muro QR MS
+					glTranslatef(0, 2.35, 0);
+					objeto.prisma(0.4, 0.2, 1.73, muro.GLindex);
+				glPopMatrix();
+				glPushMatrix();
+					//Muro Q
+					glTranslatef(0, 1.5, -0.64875);
+					objeto.prisma(1.3, 0.2, 0.4325, muro.GLindex);
+					//Muro R
+					glTranslatef(0, 0, 1.2975);
+					objeto.prisma(1.3, 0.2, 0.4325, muro.GLindex);
+				glPopMatrix();
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(4.925, 1.7, -11.8);
+				//Muro P
+				objeto.prisma(3.4, 2.93, 0.2, muro.GLindex);
+			glPopMatrix();
+			//Muro
+			glTranslatef(7.89, 1.7, -10.885);
+			objeto.prisma(3.4, 0.2, 1.83, muro.GLindex);
+		glPopMatrix();
+	glPopMatrix();
+	//Piso
+	glPushMatrix();
+		glTranslatef(5.725, 0.4, -10.935);
+		objeto.prisma(0.8, 4.33, 1.73, piso.GLindex);
+	glPopMatrix();
 }
 
 void display(void) {
@@ -88,38 +181,8 @@ void display(void) {
 				glPopMatrix();
 			glPopMatrix();
 
-			//Recamara principal
-			glPushMatrix();
-				glColor3f(1, 1, 1);
-				glPushMatrix();
-					glTranslatef(5.01, 0.4, -6.01);
-					objeto.prisma(0.8, 5.76, 0.2, muro.GLindex);
-					glPushMatrix();
-						glTranslatef(0, 2.8, 0);
-						objeto.prisma(0.4, 5.76, 0.2, muro.GLindex);
-					glPopMatrix();
-					glPushMatrix();
-						glTranslatef(-2.165, 1.5, 0);
-						objeto.prisma(2.2, 1.43, 0.2, muro.GLindex);
-					glPopMatrix();
-					glPushMatrix();
-						glTranslatef(2.13, 1.5, 0);
-						objeto.prisma(2.2, 1.5, 0.2, muro.GLindex);
-					glPopMatrix();
-				glPopMatrix();
-				glPushMatrix();
-					glTranslatef(2.13, 1.7, -7.99);
-					objeto.prisma(3.4, 0.2, 4.16, muro.GLindex);
-				glPopMatrix();
-				glPushMatrix();
-					glTranslatef(5.01, 1.7, -10.07);
-					objeto.prisma(3.4, 5.76, 0.2, muro.GLindex);
-				glPopMatrix();
-				glPushMatrix();
-					glTranslatef(7.89, 1.7, -7.24);
-					objeto.prisma(3.4, 0.2, 2.66, muro.GLindex);
-				glPopMatrix();
-			glPopMatrix();
+			recamaraPrincipal();
+			baño();
 
 			//Terreno
 			glPushMatrix();
@@ -135,7 +198,13 @@ void display(void) {
 			glPushMatrix();
 				glColor3f(1, 1, 1);
 				glTranslatef(4.975, 1.9, -6.01);
+				//Ventana AB
 				objeto.prisma(2.2, 2.83, 0.1, ventana.GLindex);
+			glPopMatrix();
+			glPushMatrix();
+				glTranslatef(3.56, 2.35, -10.935);
+				//Ventana QR
+				objeto.prisma(1.3, 0.1, 0.865, ventana.GLindex);
 			glPopMatrix();
 			glDisable(GL_BLEND);
 		glPopMatrix();
